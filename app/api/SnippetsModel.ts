@@ -1,10 +1,15 @@
-import mongoose from 'mongoose';
+import mongoose, { Schema, Document, Model } from 'mongoose';
 
-const snippetSchema = new mongoose.Schema({
-    snippet: String,
-    timestamp: { type: Date, default: new Date().toLocaleDateString('en-US') },
-})
+export interface ISnippet extends Document {
+    snippet: string;
+    timestamp: Date;
+}
 
-const SnippetModel = mongoose.models.Snippet || mongoose.model('Snippet', snippetSchema);
+const snippetSchema = new Schema<ISnippet>({
+    snippet: { type: String, required: true },
+    timestamp: { type: Date, default: Date.now },
+});
+
+const SnippetModel = (mongoose.models.Snippet as Model<ISnippet>) || mongoose.model<ISnippet>('Snippet', snippetSchema);
 
 export default SnippetModel;

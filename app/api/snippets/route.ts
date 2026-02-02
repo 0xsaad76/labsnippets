@@ -1,32 +1,24 @@
 import SnippetModel from "../SnippetsModel";
+import connectToDB from "../../lib/db";
 import mongoose from "mongoose";
 import { NextRequest, NextResponse } from "next/server";
 
-const MONGODB_URL =
-    "mongodb+srv://saad76:EKrYWkWPUSQHTLLn@cluster0.wgmqb0q.mongodb.net/";
-
-if (MONGODB_URL === undefined) {
-    // window.alert("Invalid Mongodb url !");
-    console.log("invalid mogodburl : ", MONGODB_URL);
-} else {
-    mongoose.connect(MONGODB_URL, { dbName: "LabSnippets" });
-    console.log("connection established to database");
-}
-
 export async function GET(req: NextRequest) {
     try {
+        await connectToDB();
         const snippets = await SnippetModel.find({});
         return NextResponse.json({
             data: snippets
         });
     } catch (err) {
         console.log(err);
-        return NextResponse.json({ error: "server error" });
+        return NextResponse.json({ error: "server error" }, { status: 500 });
     }
 }
 
-export async function POST(req) {
+export async function POST(req: Request) {
     try {
+        await connectToDB();
         const { snippet } = await req.json(); // Parse the request body
 
         const res = await SnippetModel.create({ snippet });
@@ -40,13 +32,19 @@ export async function POST(req) {
     }
 }
 
-export async function DELETE(req: NextRequest) {
-    const { id } = await req.json();
-
-    const snippetId = new mongoose.Types.ObjectId(id);
-
+export async function DELETE(req: Request) {
     try {
+        await connectToDB();
+        const { id } = await req.json();
+
+        if (!id) {
+            return NextResponse.json({ error: "ID is required" }, { status: 400 });
+        }
+
+        const snippetId = new mongoose.Types.ObjectId(id);
+
         await SnippetModel.findByIdAndDelete(snippetId);
+
         return NextResponse.json(
             { message: "Snippet deleted successfully" },
             { status: 200 }

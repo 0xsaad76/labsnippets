@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { io } from "socket.io-client/debug";
+
 import spinner from "./spinner.svg";
 import Image from "next/image";
 import { MdDelete } from "react-icons/md";
@@ -10,7 +10,7 @@ import { useCopyToClipboard } from "usehooks-ts";
 import { FaRegCopy } from "react-icons/fa6";
 import parse from "html-react-parser";
 
-// const socket = io('http://localhost:3001/');
+
 
 const SnippetsDisplay = () => {
   const [snippets, setSnippets] = useState<any[]>([]);

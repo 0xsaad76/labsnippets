@@ -3,18 +3,17 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useRecoilValue } from "recoil";
 import { userState } from "./atoms/user";
-import { io } from "socket.io-client/debug";
+
 import { toast } from "sonner";
 // import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import dynamic from "next/dynamic";
 
-const socket = io("https://labsnippets.onrender.com/");
-// const socket = io('http://localhost:3001/');
+
 
 const InputContainer = () => {
   const [snippet, setSnippet] = useState<string>("");
-  const [room, setRoom] = useState<string>("");
+
   const ReactQuill = useMemo(
     () => dynamic(() => import("react-quill"), { ssr: false }),
     []
@@ -48,9 +47,7 @@ const InputContainer = () => {
     }
   };
 
-  useEffect(() => {
-    console.log("socket ::: ", socket);
-  }, []);
+
 
   const formats = [
     "header",
